@@ -1,0 +1,961 @@
+/* ===== Түстер мен өлшемдер ===== */
+:root {
+  --navy: #1f274c;          /* силуэт пен фонның қою көгі */
+  --gold: #c9a96a;          /* шампань алтын (1-нұсқа «Тыныш люкс») */
+  --ivory: #f1e9d8;         /* піл сүйегі түсті мәтін */
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "Montserrat", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --sky-top: #c8d2dc;       /* аспанның ең жоғарғы түсі */
+  --sky-bottom: #d9dde6;    /* силуэт басталатын жердегі аспан түсі */
+  --glass: rgba(31, 39, 76, 0.82);   /* батырма іші — қою көк шыны */
+
+  --pad-x: 14px;            /* батырмалардың экран шетінен қашықтығы */
+  --pad-top: 14px;
+  --btn-h: 36px;            /* екі батырманың биіктігі бірдей */
+  --radius: 10px;
+
+  --logo-w: min(62vw, 250px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: var(--navy);
+  font-family: var(--font-sans);
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Жоғарғы батырмалар (бекітілген) ===== */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--pad-top) + env(safe-area-inset-top)) calc(var(--pad-x) + env(safe-area-inset-right)) 0 calc(var(--pad-x) + env(safe-area-inset-left));
+  pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+
+/* Күңгірт шыны фон — кез келген фонда батырмалар анық көрінеді */
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Жарқыл: батырма бетінен анда-санда жарық өтеді */
+.glass::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  pointer-events: none;
+  animation: shine 3.2s ease-in-out infinite;
+}
+@keyframes shine {
+  0%, 55% { left: -60%; }
+  100%    { left: 130%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glass::after { animation: none; display: none; }
+}
+
+/* ☰ мәзір батырмасы */
+.menu-btn {
+  width: var(--btn-h);
+  height: var(--btn-h);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.menu-btn span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+
+/* KZ | RU | EN */
+.lang {
+  height: var(--btn-h);
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+}
+.lang button {
+  position: relative;
+  height: 100%;
+  padding: 0 9px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(201, 169, 106, 0.45);   /* белсенді емес тіл — бозғылт алтын */
+  cursor: pointer;
+  transition: color .2s;
+}
+.lang button + button::before {   /* тік бөлгіш сызық */
+  content: "";
+  position: absolute;
+  left: 0; top: 25%; bottom: 25%;
+  width: 1.5px;
+  background: rgba(201, 169, 106, 0.55);
+}
+.lang button[aria-pressed="true"] {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.menu-btn:focus-visible,
+.lang button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ===== Басты экран фоны ===== */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+/* ===== Логотип ===== */
+/* Пішіні — images/logo.svg (маска), түсі — қою көк, бетінен алтын жарқыл өтеді */
+.logo {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
+  /* мобильді: батырмалардың астында, ортада */
+  top: calc(env(safe-area-inset-top) + var(--pad-top) + var(--btn-h) + 14px);
+  width: var(--logo-w);
+  aspect-ratio: 1127 / 173.5;
+  -webkit-mask: url("../images/logo.svg") center / contain no-repeat;
+  mask: url("../images/logo.svg") center / contain no-repeat;
+  background: linear-gradient(100deg,
+    var(--navy) 0%, var(--navy) 38%,
+    #a88a4f 43%, var(--gold) 46%, #f6ecd2 50%, var(--gold) 54%, #a88a4f 57%,
+    var(--navy) 62%, var(--navy) 100%);
+  background-size: 300% 100%;
+  animation: logo-shine 4.5s ease-in-out infinite;
+}
+@keyframes logo-shine {
+  0%, 45% { background-position: 100% 0; }
+  100%    { background-position: 0% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo { animation: none; background: var(--navy); }
+}
+
+/* Астананың шынайы фотосы (images/city.webp, 1584×484 — артық аспаны қиылған).
+   Блоктың өзі — аспан көгінен ақшыл көкке градиент; фото ::before ішінде,
+   шеттері мен төмені маска арқылы осы көкке біркелкі сіңеді.
+   Мобильді: экранның 30%-ы, фото блок биіктігіне толық сыяды (ені экраннан кең — ортасы көрінеді),
+   Бәйтеректің ұшы логотиптің астына кіреді. */
+.hero__city {
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: max(240px, calc(30svh + env(safe-area-inset-top)));
+  background: linear-gradient(to bottom, #5f9bd3 0%, #7aa6d6 60%, #5f84bb 90%, #4a6aa0 100%);
+}
+.hero__city::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../images/city.webp") center bottom / auto 100% no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+}
+/* Фото мен төменгі көктің жігі біркелкі болсын */
+.hero__city::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -2px 0;
+  height: 8%;
+  background: linear-gradient(to bottom, rgba(74, 106, 160, 0), #4a6aa0);
+  pointer-events: none;
+}
+/* Ақшыл көктен батырмаларға қарай қанық көкке, одан әрі бұрынғы толқынды фон */
+.hero__bottom {
+  flex: 1;
+  margin-top: -1px;      /* жіңішке саңылау болмасын */
+  background: linear-gradient(to bottom, #4a6aa0 0%, #34497f 45%, #253264 80%, var(--navy) 100%);
+}
+
+/* ===== Қош келдіңіздер + домалақ батырмалар — 1-нұсқа «Тыныш люкс» ===== */
+.welcome {
+  min-height: 25svh;         /* қала фотосынан кейін экранның 25%-ы */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 14px 14px;
+  text-align: center;
+}
+/* Тақырып: «Kapsula — это...» ішіндегі Kapsula сөзімен бірдей — Montserrat 700, шампань алтын.
+   «Kapsula» сөзінің орнында толық логотип (панда + KAPSULA) тұрады */
+.welcome__title {
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: .18em .5em;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(17px, 5vw, 21px);     /* телефонда ықшам */
+  line-height: 1.2;
+  letter-spacing: .04em;
+  color: var(--gold);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+}
+.welcome__pre:empty, .welcome__post:empty { display: none; }
+.welcome__logo {
+  flex: none;
+  height: 1.3em;
+  aspect-ratio: 1127 / 173.5;
+  -webkit-mask: url("../images/logo.svg") center / contain no-repeat;
+  mask: url("../images/logo.svg") center / contain no-repeat;
+  background: var(--gold);
+}
+/* Жіңішке шампань сызық, ортасында кішкентай ромбы */
+.welcome__line {
+  position: relative;
+  display: block;
+  width: 120px;
+  height: 1px;
+  margin: 10px auto 14px;
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 106, .9), transparent);
+}
+.welcome__line::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: -3px;
+  width: 7px; height: 7px;
+  background: var(--gold);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* 4 батырма — 3D карточкалар (қолданушы сызбасы бойынша): ортаға қарай бұрылған,
+   сыртқы жиектері биік, ортаға қарай аласарады. Ішінде кейін фото болады,
+   ортасында белгіше + жазу. Телефонда да, компьютерде де бір қатарда */
+.quick {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  align-items: center;
+}
+.quick li { --ry: 0deg; --s: 1; }
+.quick li:nth-child(1) { --ry: 24deg;  --s: 1; }
+.quick li:nth-child(2) { --ry: 34deg;  --s: .9; }
+.quick li:nth-child(3) { --ry: -34deg; --s: .9; }
+.quick li:nth-child(4) { --ry: -24deg; --s: 1; }
+.quick__item {
+  display: block;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.quick__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  aspect-ratio: 4 / 5;                 /* телефон: тік, экранға сыяды */
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 169, 106, .7);
+  background: linear-gradient(160deg, #34497f 0%, #253264 55%, #1a2147 100%);
+  box-shadow: 0 14px 28px rgba(5, 8, 22, .45), inset 0 1px 0 rgba(255, 255, 255, .12);
+  transform: perspective(600px) rotateY(var(--ry)) scale(var(--s));
+  transition: transform .5s cubic-bezier(.22, .8, .25, 1), border-color .3s, box-shadow .3s;
+}
+/* Фото орны: кейін background-image немесе <img> қойылады */
+.quick__photo {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+}
+.quick__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Фото үстінен күңгірт қабат — белгіше мен жазу анық көрінсін */
+.quick__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(14, 18, 38, .3), rgba(14, 18, 38, .62));
+  pointer-events: none;
+}
+.quick__icon {
+  position: relative;
+  z-index: 1;
+  width: clamp(30px, 9vw, 38px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 169, 106, .75);
+  background: rgba(31, 39, 76, .55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.quick__icon svg {
+  width: 55%;
+  height: 55%;
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.quick__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(7.5px, 2.2vw, 9.5px);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ivory);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .5);
+}
+/* Hover: карточка түзеліп, сәл көтеріледі */
+.quick__item:hover .quick__card,
+.quick__item:focus-visible .quick__card {
+  transform: perspective(600px) rotateY(calc(var(--ry) * .35)) scale(var(--s)) translateY(-4px);
+  border-color: var(--gold);
+  box-shadow: 0 20px 36px rgba(5, 8, 22, .55), 0 0 0 1px rgba(201, 169, 106, .3), inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+.quick__item:focus-visible { outline: none; }
+.quick__item:focus-visible .quick__label { text-decoration: underline; }
+.quick__item:active .quick__card { transform: perspective(600px) rotateY(calc(var(--ry) * .35)) scale(calc(var(--s) * .97)); }
+@media (prefers-reduced-motion: reduce) { .quick__card { transition: none; } }
+
+/* ===== Компьютер / планшет ===== */
+@media (min-width: 768px) {
+  :root {
+    --pad-x: 24px;
+    --pad-top: 20px;
+    --btn-h: 40px;
+    --logo-w: 240px;
+  }
+  /* Компьютер: екі батырманың дәл ортасында, бір сызықта */
+  .logo {
+    top: calc(var(--pad-top) + (var(--btn-h) - var(--logo-w) * 173.5 / 1127) / 2);
+  }
+  .lang button { font-size: 15px; padding: 0 10px; }
+  .welcome { padding: 12px 24px 16px; }
+  .welcome__title { font-size: clamp(24px, 2.4vw, 34px); flex-wrap: nowrap; white-space: nowrap; }   /* бір қатар */
+  .welcome__line { margin: 12px auto 16px; }
+  /* Компьютер: карточкалар үлкенірек әрі созыңқы (көлденең) */
+  .quick { gap: 22px; }
+  .quick__card { aspect-ratio: 16 / 10; border-radius: 18px; gap: 12px; transform: perspective(1100px) rotateY(var(--ry)) scale(var(--s)); }
+  .quick__item:hover .quick__card,
+  .quick__item:focus-visible .quick__card { transform: perspective(1100px) rotateY(calc(var(--ry) * .35)) scale(var(--s)) translateY(-6px); }
+  .quick__item:active .quick__card { transform: perspective(1100px) rotateY(calc(var(--ry) * .35)) scale(calc(var(--s) * .97)); }
+  .quick__icon { width: 54px; }
+  .quick__label { font-size: 12.5px; letter-spacing: .16em; }
+  .menu-btn span { width: 18px; }
+
+  /* Компьютер: images/city-wide.webp (3028×484 — екі жағы бұлт пен ғимараттармен жалғастырылған),
+     экранның бүкіл енін алады, ғимараттар толық көрінеді, тек төмені көкке сіңеді */
+  .hero__city {
+    height: max(250px, 30svh);
+  }
+  .hero__city::before {
+    background: url("../images/city-wide.webp") center bottom / cover no-repeat;
+  }
+
+}
+
+/* ===== Мәзір: қою көк мөлдір шыны (A нұсқасы) ===== */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: rgba(15, 20, 40, 0.18);   /* жеңіл күңгірттену — шыны артындағы фон көрінсін */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s ease;
+}
+.menu {
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  z-index: 200;
+  width: 80vw;                       /* телефон: экранның ~80%-ы */
+  display: flex;
+  flex-direction: column;
+  padding: calc(16px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
+  background: rgba(31, 39, 76, 0.52);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+  border-right: 1px solid rgba(201, 169, 106, 0.35);
+  box-shadow: 8px 0 40px rgba(10, 14, 30, 0.35);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform .55s cubic-bezier(.22, .8, .25, 1);
+  font-family: var(--font-serif);
+}
+body.menu-open { overflow: hidden; }
+body.menu-open .menu { transform: none; }
+body.menu-open .menu-overlay { opacity: 1; pointer-events: auto; }
+
+/* Жоғарғы жол: логотип (басылмайды) + ✕ */
+.menu__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 40px;
+  margin-bottom: 26px;
+}
+.menu__logo {
+  width: min(52vw, 190px);
+  aspect-ratio: 1127 / 173.5;
+  -webkit-mask: url("../images/logo.svg") left center / contain no-repeat;
+  mask: url("../images/logo.svg") left center / contain no-repeat;
+  background: var(--gold);
+  pointer-events: none;
+}
+.menu__close {
+  position: relative;
+  flex: none;
+  width: 36px; height: 36px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.menu__close span {
+  position: absolute;
+  left: 7px; right: 7px; top: 50%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+.menu__close span + span { transform: rotate(-45deg); }
+.menu__close:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 8px; }
+
+/* Пункттер — мөлдір, бұрыштары дөңгеленген батырмалар */
+.menu__list {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.menu__list a {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  padding: 12px 16px;
+  border: 1px solid rgba(201, 169, 106, 0.45);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  /* көлеңке + жоғарғы жиектегі жіңішке жарық — батырма көтеріліп тұрғандай */
+  box-shadow:
+    0 6px 16px rgba(5, 8, 22, 0.38),
+    0 1px 3px rgba(5, 8, 22, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ivory);
+  text-decoration: none;
+  transition: background .25s, border-color .25s, color .25s, transform .25s, box-shadow .25s;
+}
+.menu__list a:hover,
+.menu__list a:focus-visible {
+  background: rgba(201, 169, 106, 0.14);
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 26px rgba(5, 8, 22, 0.45),
+    0 2px 6px rgba(5, 8, 22, 0.30),
+    0 0 0 1px rgba(201, 169, 106, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  outline: none;
+}
+.menu__list a:active { transform: translateY(0) scale(.985); }
+
+/* Жарқыл толқыны: жарық сызығы батырмаларды жоғарыдан төмен кезекпен басып өтеді */
+.menu__list a::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -50%;
+  width: 35%;
+  background: linear-gradient(100deg, transparent, rgba(255, 236, 170, 0.22), transparent);
+  pointer-events: none;
+  animation: item-shine 6s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.18s);
+}
+@keyframes item-shine {
+  0%, 70% { left: -50%; }
+  100%    { left: 130%; }
+}
+
+/* Мәзір ашылғанда пункттер кезекпен сол жақтан сырғып шығады */
+.menu__list li,
+.menu__social {
+  opacity: 0;
+  transform: translateX(-22px);
+  transition: opacity .45s ease, transform .55s cubic-bezier(.22, .8, .25, 1);
+}
+body.menu-open .menu__list li,
+body.menu-open .menu__social {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(0.18s + var(--i, 0) * 0.06s);
+}
+.menu__list li:nth-child(1) { --i: 0; }
+.menu__list li:nth-child(2) { --i: 1; }
+.menu__list li:nth-child(3) { --i: 2; }
+.menu__list li:nth-child(4) { --i: 3; }
+.menu__list li:nth-child(5) { --i: 4; }
+.menu__list li:nth-child(6) { --i: 5; }
+.menu__social { --i: 6; }
+
+/* WhatsApp, Instagram, 2GIS — домалақ белгішелер */
+.menu__social { display: flex; gap: 12px; margin-top: 26px; }
+.soc {
+  width: 42px; height: 42px;
+  box-shadow: 0 6px 14px rgba(5, 8, 22, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--gold);
+  transition: background .2s, transform .2s;
+}
+.soc svg { width: 22px; height: 22px; fill: var(--navy); }
+.soc--2gis svg { width: 30px; height: 30px; }
+.soc:hover, .soc:focus-visible { background: #dcc08a; transform: translateY(-2px); outline: none; }
+
+@media (min-width: 768px) {
+  .menu {
+    width: 50vw;                     /* компьютер: дәл ортасына дейін */
+    padding: 24px 48px 40px 48px;
+  }
+  .menu__head { margin-bottom: 34px; }
+  .menu__logo { width: 220px; }
+  .menu__list { gap: 12px; }
+  .menu__list a { font-size: 26px; padding: 13px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu, .menu-overlay, .menu__list li, .menu__social { transition: none; }
+  .menu__list a::after { animation: none; display: none; }
+}
+
+/* ===== Бөлімдер (stil.mp4 үлгісі): мәтін + бір кіші, бір үлкен фото, кезектесіп ===== */
+.stories {
+  position: relative;
+  overflow: hidden;
+  background: var(--navy) url("../images/bg-bottom.webp") center top / cover no-repeat;
+  padding: 24px 0 64px;
+}
+.stories::before {               /* толқынды фонды күңгірттеу — мәтін анық оқылсын */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--navy) 0%, rgba(20, 26, 52, .82) 18%, rgba(14, 18, 38, .78) 100%);
+}
+.story {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 36px 20px;
+}
+.story__text { position: relative; z-index: 1; max-width: 30em; }
+.story__mark {                  /* кішкентай алтын панда белгісі */
+  display: block;
+  width: 38px; height: 38px;
+  margin-bottom: 18px;
+  -webkit-mask: url("../images/logo.svg") left center / auto 100% no-repeat;
+  mask: url("../images/logo.svg") left center / auto 100% no-repeat;
+  background: var(--gold);
+}
+.story__title {
+  margin: 0 0 16px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(28px, 7.4vw, 34px);
+  line-height: 1.12;
+  color: var(--ivory);
+}
+.story__title strong {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--gold);
+}
+/* 1-бөлімнің басты тақырыбы — үлкен, жоғарыда (қолданушы жасылмен белгілеген аймақ) */
+.story--a .story__title {
+  font-size: clamp(38px, 11vw, 48px);
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+.story--a .story__title br.br-desk { display: none; }
+.story__text p {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: rgba(241, 233, 216, .78);
+}
+.story__btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 9px 20px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .3);
+  transition: transform .25s, background .25s;
+}
+.story__btn:hover, .story__btn:focus-visible { background: #dcc08a; transform: translateY(-2px); outline: none; }
+
+/* Фото рамкалары (фотолар кейін қойылады) */
+.story__photos { position: relative; height: 78vw; margin-top: 28px; }
+.ph {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px dashed rgba(201, 169, 106, .45);
+  background: linear-gradient(135deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .35);
+  color: rgba(241, 233, 216, .45);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ph:has(img) { border: 1px solid rgba(201, 169, 106, .3); }   /* фото қойылған рамка — үзік сызық емес, жіңішке алтын жиек */
+.ph svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.3; margin-bottom: 6px; }
+.ph span { display: flex; flex-direction: column; align-items: center; }
+
+/* 1-бөлім: мәтін сол жақта, фотолар оң жақта */
+.story--a .ph--big   { right: -20px; top: 0; width: 62%; height: 100%; border-radius: 34px 0 0 34px; }
+.story--a .ph--small { left: 0; bottom: 0; width: 40%; height: 52%; border-radius: 20px; }
+/* 2-бөлім: үлкен фото сол жақта, мәтін мен кіші фото оң жақта */
+.story--b { display: flex; flex-direction: column; }
+.story--b .story__text { order: 1; }
+.story--b .story__photos { order: 2; }
+.story--b .ph--big   { left: -20px; top: 0; width: 62%; height: 100%; border-radius: 0 34px 34px 0; }
+.story--b .ph--small { right: -20px; bottom: 0; width: 44%; height: 50%; border-radius: 20px 0 0 20px; }
+
+/* Айналдырғанда ақырын пайда болу */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s cubic-bezier(.22, .8, .25, 1); }
+.reveal.is-in { opacity: 1; transform: none; }
+.reveal--d1 { transition-delay: .12s; }
+.reveal--d2 { transition-delay: .24s; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+@media (min-width: 900px) {
+  .stories { padding: 40px 0 90px; }
+  .story { padding: 0; height: clamp(440px, 42vw, 620px); }
+  .story__text { position: absolute; max-width: none; }
+  .story__title { font-size: clamp(32px, 3vw, 44px); }
+  .story__text p { font-size: 13.5px; }
+  .story__photos { position: absolute; inset: 0; height: auto; margin: 0; }
+  .ph svg { width: 36px; height: 36px; }
+
+  .story--a .story__text { left: 4%; top: 8%; width: 25%; }
+  /* Үлкен тақырып мәтін бағанынан кеңірек — кіші фотоның үстіндегі бос аймаққа дейін созылады */
+  .story--a .story__title { width: 190%; font-size: clamp(46px, 5vw, 76px); margin-bottom: 24px; }
+  .story--a .story__title br.br-desk { display: inline; }
+  .story--a .ph--small { left: 38%; top: 57%; bottom: auto; width: 25%; height: 36%; border-radius: 22px; }
+  .story--a .ph--big   { left: 66%; right: -6%; top: 10%; width: auto; height: 78%; border-radius: 40px 0 0 40px; }
+
+  .story--b .story__text { left: 50%; top: 12%; width: 30%; }
+  .story--b .ph--big   { left: -4%; top: 8%; width: 43%; height: 68%; border-radius: 0 44px 44px 0; }
+  .story--b .ph--small { left: 64%; right: -6%; top: 58%; bottom: auto; width: auto; height: 34%; border-radius: 22px 0 0 22px; }
+}
+
+/* ===== Жоғарғы жолақ: оң жақта «Брондау» (алтын) + тіл ===== */
+.topbar__right { display: flex; align-items: center; gap: 8px; pointer-events: auto; }
+.bk-btn {
+  position: relative; overflow: hidden;
+  height: var(--btn-h);
+  display: inline-flex; align-items: center;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #dcc08a, var(--gold));
+  color: var(--navy);
+  font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(5, 8, 22, .35), inset 0 1px 0 rgba(255, 255, 255, .4);
+  transition: transform .2s;
+}
+.bk-btn::after {                       /* батырмадағыдай жарқыл */
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
+  animation: shine 3.2s ease-in-out infinite;
+}
+.bk-btn:hover, .bk-btn:focus-visible { transform: translateY(-1px); outline: none; }
+@media (min-width: 768px) { .bk-btn { padding: 0 20px; font-size: 14px; } .topbar__right { gap: 10px; } }
+
+/* ===== Брондау терезесі: экран ортасында, арты мөлдір-күңгірт (мәзір сияқты шыны) ===== */
+body.bk-open { overflow: hidden; }
+.bk-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(15, 20, 40, .35);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  opacity: 0; transition: opacity .3s ease;
+}
+.bk {
+  position: fixed; z-index: 310;
+  left: 50%; top: 50%;
+  width: min(92vw, 420px);
+  max-height: 92svh; overflow-y: auto;
+  padding: 26px 22px 22px;
+  border-radius: 22px;
+  border: 1px solid rgba(201, 169, 106, .55);
+  background: rgba(31, 39, 76, .72);
+  -webkit-backdrop-filter: blur(22px) saturate(140%); backdrop-filter: blur(22px) saturate(140%);
+  box-shadow: 0 30px 70px rgba(5, 8, 22, .55), inset 0 1px 0 rgba(255, 255, 255, .1);
+  color: var(--ivory);
+  transform: translate(-50%, -46%) scale(.96);
+  opacity: 0;
+  transition: opacity .3s ease, transform .35s cubic-bezier(.22, .8, .25, 1);
+}
+.bk-overlay.is-on { opacity: 1; }
+.bk.is-on { opacity: 1; transform: translate(-50%, -50%); }
+.bk[hidden], .bk-overlay[hidden] { display: none; }
+.bk__close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; padding: 0; border: 0; background: none; cursor: pointer; }
+.bk__close span { position: absolute; left: 9px; right: 9px; top: 50%; height: 2px; border-radius: 2px; background: var(--gold); transform: rotate(45deg); }
+.bk__close span + span { transform: rotate(-45deg); }
+.bk__title { margin: 0 0 6px; font-family: var(--font-sans); font-weight: 700; font-size: 26px; letter-spacing: .06em; color: var(--gold); text-align: center; }
+.bk__sub { margin: 0 0 20px; font-family: var(--font-serif); font-size: 17px; line-height: 1.3; text-align: center; color: rgba(241, 233, 216, .8); }
+.bk__form { display: grid; gap: 16px; }
+.bk__field { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.bk__label { padding: 0; font-size: 11.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: rgba(241, 233, 216, .7); }
+.bk__input {
+  width: 100%; height: 48px; padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 169, 106, .5);
+  background: rgba(14, 18, 38, .45);
+  color: var(--ivory); font: inherit; font-size: 16px;   /* 16px — iPhone өзі үлкейтпесін */
+  transition: border-color .2s, box-shadow .2s;
+}
+.bk__input::placeholder { color: rgba(241, 233, 216, .35); }
+.bk__input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 169, 106, .2); }
+/* Күн саны: − [N күн] + және жылжымалы сызғыш */
+.bk__days { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.bk__step {
+  width: 44px; height: 44px; flex: none;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 169, 106, .55);
+  background: rgba(14, 18, 38, .45);
+  color: var(--gold); font-size: 24px; line-height: 1; cursor: pointer;
+}
+.bk__step:hover, .bk__step:focus-visible { background: rgba(201, 169, 106, .15); outline: none; }
+.bk__daysval { font-size: 15px; color: rgba(241, 233, 216, .85); }
+.bk__daysval b { font-family: var(--font-sans); font-size: 30px; color: var(--gold); margin-right: 4px; }
+.bk__range {
+  --fill: 0%;
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 6px; margin: 6px 0 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold) var(--fill), rgba(241, 233, 216, .18) var(--fill));
+  cursor: pointer;
+}
+.bk__range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--gold); border: 3px solid var(--navy);
+  box-shadow: 0 0 0 1px var(--gold), 0 4px 10px rgba(0, 0, 0, .4);
+}
+.bk__range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--gold); border: 3px solid var(--navy); box-shadow: 0 0 0 1px var(--gold); }
+.bk__range:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+/* Жынысы: төртбұрышты белгі-қорап (біреуін ғана таңдауға болады) */
+.bk__gender { grid-template-columns: 1fr 1fr; }
+.bk__gender legend { grid-column: 1 / -1; margin-bottom: 8px; }
+.bk__check {
+  position: relative;
+  display: flex; align-items: center; gap: 12px;
+  height: 50px; padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 169, 106, .45);
+  background: rgba(14, 18, 38, .45);
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.bk__check input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.bk__box {
+  position: relative; flex: none;
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--gold);
+  transition: background .2s;
+}
+.bk__box::after {                       /* құсбелгі ✓ */
+  content: ""; position: absolute; left: 6px; top: 2px;
+  width: 6px; height: 11px;
+  border: solid var(--navy); border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform .2s;
+}
+.bk__check input:checked + .bk__box { background: var(--gold); }
+.bk__check input:checked + .bk__box::after { transform: rotate(45deg) scale(1); }
+.bk__check:has(input:checked) { border-color: var(--gold); background: rgba(201, 169, 106, .14); }
+.bk__check input:focus-visible + .bk__box { box-shadow: 0 0 0 3px rgba(201, 169, 106, .35); }
+/* Баға */
+.bk__price {
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 169, 106, .55);
+  background: linear-gradient(135deg, rgba(201, 169, 106, .2), rgba(201, 169, 106, .06));
+}
+.bk__total { font-family: var(--font-sans); font-size: 26px; color: var(--gold); }
+.bk__per { grid-column: 1 / -1; font-size: 12.5px; color: rgba(241, 233, 216, .7); }
+.bk__err { margin: -4px 0 0; font-size: 13px; color: #ffb4a2; text-align: center; }
+.bk__submit {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  height: 52px;
+  border: 0; border-radius: 999px;
+  background: linear-gradient(180deg, #dcc08a, var(--gold));
+  color: var(--navy);
+  font: inherit; font-size: 15px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .4);
+  cursor: pointer;
+  transition: transform .2s;
+}
+.bk__submit svg { width: 22px; height: 22px; fill: var(--navy); }
+.bk__submit:hover, .bk__submit:focus-visible { transform: translateY(-2px); outline: none; }
+.bk__hint { margin: -6px 0 0; font-size: 12px; text-align: center; color: rgba(241, 233, 216, .55); }
+@media (prefers-reduced-motion: reduce) { .bk, .bk-overlay { transition: none; } .bk-btn::after { animation: none; display: none; } }
+
+/* ===== Ішкі беттер: төмен айналдырғанда сол жақ төменде «артқа» нұсқары (тек белгі, жылтырайды) ===== */
+.back-float {
+  position: fixed; z-index: 90;
+  left: calc(16px + env(safe-area-inset-left));
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  width: 50px; height: 50px;
+  display: grid; place-items: center;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1.5px solid var(--gold);
+  background: rgba(31, 39, 76, .7);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px rgba(5, 8, 22, .5);
+  opacity: 0; transform: translateY(20px) scale(.9); pointer-events: none;
+  transition: opacity .35s ease, transform .4s cubic-bezier(.22, .8, .25, 1);
+  animation: back-glow 2.6s ease-in-out infinite;
+}
+.back-float.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.back-float svg { width: 22px; height: 22px; fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.back-float::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -70%; width: 50%;
+  background: linear-gradient(100deg, transparent, rgba(255, 236, 170, .45), transparent);
+  animation: shine 3.2s ease-in-out infinite;
+}
+.back-float:hover, .back-float:focus-visible { background: rgba(31, 39, 76, .9); outline: none; }
+@keyframes back-glow {
+  0%, 100% { box-shadow: 0 10px 26px rgba(5, 8, 22, .5), 0 0 0 0 rgba(201, 169, 106, 0); }
+  50%      { box-shadow: 0 10px 26px rgba(5, 8, 22, .5), 0 0 18px 2px rgba(201, 169, 106, .45); }
+}
+@media (prefers-reduced-motion: reduce) { .back-float, .back-float::after { animation: none; } }
+
+/* Брондау: екі адамдық таңдалғанда «Жынысы» жасырылады */
+.bk__field[hidden] { display: none; }
+/* «Бір адамдық / Екі адамдық» телефонда бір қатарға сыюы үшін */
+.bk__type .bk__check { font-size: 14px; padding: 0 12px; gap: 10px; white-space: nowrap; }
+@media (max-width: 359px) { .bk__type .bk__check { font-size: 13px; padding: 0 10px; } }
+
+/* ===== «Байланыс» терезесі: брондау терезесінің стилі (.bk) + үш үлкен батырма ===== */
+.ct__list { display: grid; gap: 12px; }
+.ct__btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(201, 169, 106, .5);
+  background: rgba(14, 18, 38, .45);
+  color: var(--ivory); text-decoration: none;
+  transition: transform .2s, border-color .2s, background .2s;
+}
+.ct__btn:hover, .ct__btn:focus-visible { transform: translateY(-2px); border-color: var(--gold); background: rgba(201, 169, 106, .12); outline: none; }
+.ct__ico { flex: none; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; }
+.ct__ico svg { width: 26px; height: 26px; fill: #fff; }
+.ct__btn--wa .ct__ico { background: #25d366; }
+.ct__btn--tg .ct__ico { background: #229ed9; }
+.ct__btn--ph .ct__ico { background: var(--gold); }
+.ct__btn--ph .ct__ico svg { fill: var(--navy); }
+.ct__btn b { display: block; font-size: 16px; font-weight: 700; }
+.ct__btn small { display: block; margin-top: 2px; font-size: 13px; letter-spacing: .03em; color: rgba(241, 233, 216, .65); }
+
+/* ===== Сайттың төменгі бөлігі (footer) — барлық бетте ===== */
+.ft {
+  position: relative;
+  padding: 48px 22px calc(28px + env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, #11162f, #0a0d1d);
+  border-top: 1px solid rgba(201, 169, 106, .35);
+  color: var(--ivory);
+}
+.ft::before {                         /* жоғарғы жиектегі алтын жарық сызық */
+  content: ""; position: absolute; left: 50%; top: -1px; width: min(60%, 420px); height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.ft__inner { max-width: 1180px; margin: 0 auto; display: grid; gap: 36px; }
+.ft__brand { display: grid; justify-items: center; text-align: center; gap: 18px; }
+.ft__soc { display: flex; gap: 12px; }
+.ft__motto { margin: 0; max-width: 14em; font-family: var(--font-serif); font-weight: 500; font-size: 30px; line-height: 1.12; color: var(--ivory); }
+.ft__logo {
+  display: block; width: 190px; aspect-ratio: 1127 / 173.5;
+  -webkit-mask: url("../images/logo.svg") center / contain no-repeat;
+  mask: url("../images/logo.svg") center / contain no-repeat;
+  background: var(--gold);
+}
+.ft__contacts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; justify-items: center; }
+.ft__contacts li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(241, 233, 216, .78); }
+.ft__contacts svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--gold); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.ft__contacts a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(201, 169, 106, .3); }
+.ft__contacts a:hover, .ft__contacts a:focus-visible { color: var(--gold); outline: none; }
+.ft__nav { display: grid; justify-items: center; gap: 12px; }
+.ft__nav a {
+  font-family: var(--font-serif); font-weight: 600; font-size: 17px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(201, 169, 106, .85); text-decoration: none;
+  transition: color .2s, letter-spacing .25s;
+}
+.ft__nav a:hover, .ft__nav a:focus-visible { color: #f0d9a4; letter-spacing: .14em; outline: none; }
+.ft__copy { max-width: 1180px; margin: 36px auto 0; padding-top: 18px; border-top: 1px solid rgba(201, 169, 106, .15); text-align: center; font-size: 12px; letter-spacing: .04em; color: rgba(241, 233, 216, .45); }
+@media (min-width: 900px) {
+  .ft { padding: 64px 48px 30px; }
+  .ft__inner { grid-template-columns: 1fr auto; align-items: start; }
+  .ft__brand { justify-items: start; text-align: left; }
+  .ft__motto { font-size: 40px; }
+  .ft__contacts { justify-items: start; }
+  .ft__nav { justify-items: end; text-align: right; gap: 10px; }
+  .ft__copy { text-align: left; }
+}
+/* «Артқа» белгісі төменгі бөлікті жаппасын — footer-де оның орны бар */
+.subpage .ft { padding-bottom: calc(86px + env(safe-area-inset-bottom)); }
+@media (min-width: 900px) { .subpage .ft { padding-bottom: 30px; } }

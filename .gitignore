@@ -1,0 +1,15 @@
+# GitHub-қа тек сайт файлдары жүктеледі (ақ тізім).
+# Түпнұсқа фото папкалары, var/, .claude/, жұмыс журналдары мен архив — жүктелмейді.
+/*
+!/.gitignore
+!/.nojekyll
+!/index.html
+!/hotel.html
+!/capsule.html
+!/guests.html
+!/nearby.html
+!/info.html
+!/services.html
+!/css/
+!/js/
+!/images/
