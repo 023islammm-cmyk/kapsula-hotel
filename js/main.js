@@ -36,15 +36,8 @@ var I18N = {
     'cap.male.title': 'Ерлер капсуласы',
     'cap.day': 'Тәулігіне',
     'cap.book': 'Брондау',
-    'cap.plans': 'Ұзақ тұруға тиімді тарифтер',
     'cap.inside': 'Капсулада не бар',
-    'cap.days7': '7 күн',
-    'cap.days14': '14 күн',
-    'cap.days30': '30 күн',
     'cap.perday': 'тәулік',
-    'cap.plan.start': 'Қысқа сапарлар мен жұмыс сапарларына.',
-    'cap.plan.work': 'Екі аптаға тоқтайтындар үшін ең тиімді.',
-    'cap.plan.base': 'Шектеулі: айына тек 1–2 капсула.',
     'cap.f.bed': 'Жеке капсула: кең төсек, таза ақ төсек-орын мен жұмсақ жастық',
     'cap.f.blind': 'Жабылатын перде — тыныш ұйқы мен жеке кеңістік үшін',
     'cap.f.light': 'Жеке жарық, сөре, айна және киім ілгіш',
@@ -210,7 +203,6 @@ var I18N = {
     "bk.male": "Ер",
     "bk.female": "Әйел",
     "bk.price": "Бағасы",
-    "bk.plan": "тариф",
     "bk.submit": "Брондау",
     "bk.hint": "Батырманы басқанда WhatsApp ашылады, хабарлама өзі жазылып тұрады",
     "bk.err.name": "Аты-жөніңізді жазыңыз",
@@ -309,15 +301,8 @@ var I18N = {
     'cap.male.title': 'Мужская капсула',
     'cap.day': 'В сутки',
     'cap.book': 'Забронировать',
-    'cap.plans': 'Выгодные тарифы для долгого проживания',
     'cap.inside': 'Что есть в капсуле',
-    'cap.days7': '7 дней',
-    'cap.days14': '14 дней',
-    'cap.days30': '30 дней',
     'cap.perday': 'сутки',
-    'cap.plan.start': 'Для коротких поездок и рабочих заездов.',
-    'cap.plan.work': 'Оптимально для тех, кто остаётся на две недели.',
-    'cap.plan.base': 'Ограниченно: 1–2 капсулы в месяц.',
     'cap.f.bed': 'Отдельная капсула: просторная кровать, чистое белое бельё и мягкая подушка',
     'cap.f.blind': 'Закрывающаяся шторка — для спокойного сна и личного пространства',
     'cap.f.light': 'Личное освещение, полка, зеркало и вешалка',
@@ -483,7 +468,6 @@ var I18N = {
     "bk.male": "Мужской",
     "bk.female": "Женский",
     "bk.price": "Стоимость",
-    "bk.plan": "тариф",
     "bk.submit": "Забронировать",
     "bk.hint": "После нажатия откроется WhatsApp с уже готовым сообщением",
     "bk.err.name": "Укажите имя и фамилию",
@@ -582,15 +566,8 @@ var I18N = {
     'cap.male.title': 'Men’s capsule',
     'cap.day': 'Per night',
     'cap.book': 'Book now',
-    'cap.plans': 'Great-value long-stay plans',
     'cap.inside': 'What’s in the capsule',
-    'cap.days7': '7 days',
-    'cap.days14': '14 days',
-    'cap.days30': '30 days',
     'cap.perday': 'night',
-    'cap.plan.start': 'For short trips and work visits.',
-    'cap.plan.work': 'Best value for a two-week stay.',
-    'cap.plan.base': 'Limited: only 1–2 capsules per month.',
     'cap.f.bed': 'Private capsule: a roomy bed, fresh white linen and a soft pillow',
     'cap.f.blind': 'A privacy blind for quiet sleep and personal space',
     'cap.f.light': 'Personal light, shelf, mirror and clothes hanger',
@@ -756,7 +733,6 @@ var I18N = {
     "bk.male": "Male",
     "bk.female": "Female",
     "bk.price": "Price",
-    "bk.plan": "plan",
     "bk.submit": "Book now",
     "bk.hint": "WhatsApp will open with your message ready to send",
     "bk.err.name": "Please enter your full name",
@@ -896,8 +872,7 @@ var I18N = {
 })();
 
 // ===== Брондау терезесі → WhatsApp =====
-// Баға: 7 күнге дейін — тәулігіне 6 000 ₸; 7–13 күн — 5 400 ₸ (дәл 7 күн = 38 000 ₸, START 7);
-// 14–29 күн — 5 000 ₸ (WORK 14 = 70 000 ₸); 30–31 күн — 4 500 ₸ (BASE 30 = 135 000 ₸).
+// Баға: капсула — тәулігіне 6 000 ₸, VIP бөлме — тәулігіне 12 000 ₸. Тарифтер жоқ.
 (function () {
   var modal = document.getElementById('booking-modal');
   if (!modal) return;
@@ -926,25 +901,18 @@ var I18N = {
     if (lang() === 'en') return n === 1 ? 'day' : 'days';
     return 'күн';
   }
-  function price(d) {
-    if (d === 7) return { sum: 38000, rate: 5400, plan: 'START 7' };
-    if (d === 14) return { sum: 70000, rate: 5000, plan: 'WORK 14' };
-    if (d === 30) return { sum: 135000, rate: 4500, plan: 'BASE 30' };
-    var rate = d >= 30 ? 4500 : d >= 14 ? 5000 : d >= 7 ? 5400 : 6000;
-    return { sum: d * rate, rate: rate, plan: d >= 30 ? 'BASE 30' : d >= 14 ? 'WORK 14' : d >= 7 ? 'START 7' : '' };
-  }
   var sexBox = modal.querySelector('.bk__sex');
   function isDouble() { var r = form.querySelector('input[name="type"]:checked'); return r && r.value === 'double'; }
   function update() {
     var d = +range.value;
     out.textContent = d;
     unit.textContent = dayUnit(d);
-    // Екі адамдық (VIP бөлме): тәулігіне 12 000 ₸, апталық/айлық жеңілдік жоқ; жынысы сұралмайды
+    // Екі адамдық (VIP бөлме): жынысы сұралмайды
     var dbl = isDouble();
     if (sexBox) sexBox.hidden = dbl;
-    var p = dbl ? { sum: d * 12000, rate: 12000, plan: '' } : price(d);
-    total.textContent = money(p.sum);
-    per.textContent = '≈ ' + money(p.rate) + ' / ' + t('cap.perday') + (p.plan ? ' · ' + t('bk.plan') + ' ' + p.plan : '');
+    var rate = dbl ? 12000 : 6000;
+    total.textContent = money(d * rate);
+    per.textContent = money(rate) + ' / ' + t('cap.perday');
     range.style.setProperty('--fill', ((d - 1) / 30 * 100) + '%');
   }
 
@@ -1003,7 +971,7 @@ var I18N = {
     if (!dbl && !g) { err.textContent = t('bk.err.gender'); err.hidden = false; return; }
     err.hidden = true;
     var d = +range.value;
-    var sum = dbl ? d * 12000 : price(d).sum;
+    var sum = d * (dbl ? 12000 : 6000);
     var who = dbl ? t('bk.msg.double') : t(g.value === 'male' ? 'bk.msg.male' : 'bk.msg.female');
     // Мысал: «Сәлеметсіз бе! Брондағым келеді: Жолбарыс Исламхан, ер адам, 3 күнге — 18 000 ₸»
     var msg = t('bk.msg.hello') + ' ' + name + ', ' + who + ', ' +
