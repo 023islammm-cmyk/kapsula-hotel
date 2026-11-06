@@ -108,6 +108,7 @@
 .svc__title { margin: 0 0 12px; font-family: var(--font-serif); font-weight: 500; font-size: clamp(30px, 8.4vw, 38px); line-height: 1.08; color: var(--ivory); }
 .svc__title strong { display: block; font-family: var(--font-sans); font-weight: 700; letter-spacing: .03em; color: var(--gold); }
 .svc__text p { margin: 0; font-size: 14px; line-height: 1.75; color: rgba(241, 233, 216, .82); }
+.svc__text .facts { margin-top: 14px; }
 .svc__gal { display: grid; gap: 8px; grid-template-columns: repeat(var(--n, 3), 1fr); }
 .svc__gal--1 { --n: 1; } .svc__gal--2 { --n: 2; } .svc__gal--3 { --n: 3; }
 .svc__gal img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 14px; box-shadow: 0 12px 26px rgba(5, 8, 22, .4); }
